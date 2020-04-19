@@ -54,7 +54,9 @@
 #include "properties.hpp"
 #include "spectral.hpp"
 #include "traits.hpp"
-
+#include "top_decomposition.hpp"
+#include "bottom_decomposition.hpp"
+#include "mux_decomposition.hpp"
 /*
          /\___/\
         (  o o  )
