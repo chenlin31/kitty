@@ -67,9 +67,8 @@ namespace kitty
 	std::vector<std::tuple<int, std::string, TT>> top_decomposition_impl(const TT&  func)
 	{
 		std::vector<std::tuple<int, std::string, TT>> result;
-		TT func1, tt;
-		tt = func;
-		bool is_end{ false };
+		TT tt;
+		tt = func;		
 		auto support = kitty::exist_var_tt(tt);
 		if (kitty::is_top_decomposition(tt) == false)
 		{
@@ -78,44 +77,34 @@ namespace kitty
 		else
 		{
 			for (auto j = 1; j <= support.size(); j++)
-			{
-				TT remainder;
-				if (is_const0(tt)) break;
+			{		
 				for (auto i = 0; i < support.size(); i++)
 				{
 					auto var_index = support[i];
-					auto res = kitty::is_top_decomposable(tt, var_index);
-					if (res == kitty::top_decomposition::none)
-					{
-						remainder = tt;
-					}
-					else
-					{
-						remainder = cofactor0(tt, var_index);
-						tt = remainder;
-
-						switch (res)
+					auto res = kitty::is_top_decomposable(tt, var_index,&tt);
+                                        if(is_const0(tt) | is_const0(~tt) | tt.num_vars()==1) break;						
+						
+					switch (res)
 						{
 						default:
-							assert(false);
+							break;
 						case kitty::top_decomposition::and_:
-							result.push_back(std::make_tuple(support[i], "and", remainder));
+							result.push_back(std::make_tuple(support[i], "and", tt));
 							break;
 						case kitty::top_decomposition::or_:
-							result.push_back(std::make_tuple(support[i], "or", remainder));
+							result.push_back(std::make_tuple(support[i], "or", tt));
 							break;
 						case kitty::top_decomposition::lt_:
-							result.push_back(std::make_tuple(support[i], "lt", remainder));
+							result.push_back(std::make_tuple(support[i], "lt", tt));
 							break;
 						case kitty::top_decomposition::le_:
-							result.push_back(std::make_tuple(support[i], "le", remainder));
+							result.push_back(std::make_tuple(support[i], "le", tt));
 							break;
 						case kitty::top_decomposition::xor_:
-							result.push_back(std::make_tuple(support[i], "xor", remainder));
+							result.push_back(std::make_tuple(support[i], "xor", tt));
 							break;
 						}
-						break;
-					}
+					
 				}
 			}
 			return result;
