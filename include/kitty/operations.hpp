@@ -1191,4 +1191,50 @@ inline TT shift_with_mask( const TT& f, uint8_t mask )
   return copy;
 }
 
+  
+enum operator_type
+{
+    _xor_,
+    _and_,
+    _or_,
+    _xnor_,
+    _nand_,
+    _nor_,
+    none,
+};
+
+static std::string multi_operator(int num, operator_type type)
+{
+    dynamic_truth_table a(num), b(num);
+    create_nth_var(a, 0);
+    for (auto i = 1; i < num; ++i)
+    {
+        create_nth_var(b, i);
+        switch (type)
+        {
+        default:
+            break;
+        case kitty::operator_type::_xor_:
+        case kitty::operator_type::_xnor_:
+            a = binary_xor(a, b);
+            break;
+        case kitty::operator_type::_or_:
+        case kitty::operator_type::_nor_:
+            a = binary_or(a, b);
+            break;
+        case kitty::operator_type::_and_:
+        case kitty::operator_type::_nand_:
+            a = binary_and(a, b);
+            break;
+        }
+    }
+
+    if (type == kitty::operator_type::_xnor_ | type == kitty::operator_type::_nor_ | type == kitty::operator_type::_nand_)
+    {
+        a = unary_not(a);
+    }
+
+    return to_hex(a);
+}
+  
 } // namespace kitty
